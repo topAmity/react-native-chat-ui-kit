@@ -1,3 +1,11 @@
-export function multiply(a: number, b: number): Promise<number> {
-  return Promise.resolve(a * b);
-}
+import AmityUiKitProvider from './providers/amity-ui-kit-provider';
+import Home from './components/Home/index';
+import RecentChat from './screens/RecentChat/RecentChat';
+import AmityUiKitChat from './routes/ChatNavigator';
+
+export {
+  AmityUiKitProvider,
+  Home,
+  RecentChat,
+  AmityUiKitChat,
+};
