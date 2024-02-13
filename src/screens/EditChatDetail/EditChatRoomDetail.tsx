@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ActionSheetIOS,
   Platform,
-  Alert,
   TextInput,
 } from 'react-native';
 
@@ -22,6 +21,10 @@ import LoadingImage from '../../components/LoadingImage';
 import type { RootStackParamList } from '../../routes/RouteParamList';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { CameraIcon } from '../../svg/CameraIcon';
+import { AvatarIcon } from '../../svg/AvatarIcon';
+
 interface EditChatDetailProps {
   navigation: any;
   route: any;
@@ -46,12 +49,25 @@ export const EditChatRoomDetail: React.FC<EditChatDetailProps> = ({
 
 
 
-  navigation.setOptions({
-    headerLeft: () => <CloseButton navigation={navigation} />,
-    headerRight: () => (
-      <DoneButton navigation={navigation} onDonePressed={onDonePressed} />
-    ),
-  });
+  useEffect(() => {
+    navigation.setOptions({
+
+      header: () => (
+        <SafeAreaView edges={['top']}>
+          <View style={styles.topBar}>
+            <CloseButton navigation={navigation} />
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerText}>Member Detail</Text>
+            </View>
+            <DoneButton navigation={navigation} onDonePressed={onDonePressed} />
+          </View>
+        </SafeAreaView>
+      ),
+      headerTitle: '',
+    });
+
+
+  }, [])
   const onDonePressed = async () => {
 
     try {
@@ -135,11 +151,13 @@ export const EditChatRoomDetail: React.FC<EditChatDetailProps> = ({
         }
       );
     } else {
-      Alert.alert('Select a Photo', '', [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Take Photo', onPress: pickCamera },
-        { text: 'Choose from Library', onPress: pickImage },
-      ]);
+      // Alert.alert('Select a Photo', '', [
+      //   { text: 'Cancel', style: 'cancel' },
+      //   { text: 'Take Photo', onPress: pickCamera },
+      //   { text: 'Choose from Library', onPress: pickImage },
+      // ]);
+      pickImage()
+
     }
   };
 
@@ -156,6 +174,7 @@ export const EditChatRoomDetail: React.FC<EditChatDetailProps> = ({
   }
   return (
     <View style={styles.container}>
+
       <LoadingOverlay
         isLoading={showLoadingIndicator}
         loadingText="Loading..."
@@ -174,31 +193,20 @@ export const EditChatRoomDetail: React.FC<EditChatDetailProps> = ({
             </View>
 
 
-            : <Image
+            : (groupChat?.avatarFileId ? <Image
               style={styles.avatar}
               source={
-                groupChat?.avatarFileId
-                  ? { uri: `https://api.${apiRegion}.amity.co/api/v3/files/${groupChat?.avatarFileId}/download` }
-                  : require('../../../assets/icon/Placeholder.png')
-              }
-            />}
+                { uri: `https://api.${apiRegion}.amity.co/api/v3/files/${groupChat?.avatarFileId}/download` }
 
-          {/* <Image
-            style={styles.avatar}
-            source={
-              imageMultipleUri.length>0
-                ? { uri: imageMultipleUri[0] }
-                : require('../../../assets/icon/Placeholder.png')
-            }
-          /> */}
+              }
+            /> : <AvatarIcon />)}
+
+   
         </TouchableOpacity>
         <View style={imageMultipleUri[0] ? styles.uploadedCameraIconContainer : styles.cameraIconContainer}>
           <TouchableOpacity onPress={handleAvatarPress}>
             <View style={styles.cameraIcon}>
-              <Image
-                source={require('../../../assets/icon/cameraIcon.png')}
-                style={styles.imageIcon}
-              />
+              <CameraIcon width={16} height={16} />
             </View>
           </TouchableOpacity>
         </View>
@@ -220,6 +228,7 @@ export const EditChatRoomDetail: React.FC<EditChatDetailProps> = ({
         placeholder="Enter your display name"
         placeholderTextColor="#a0a0a0"
       />
+
     </View>
   );
 };

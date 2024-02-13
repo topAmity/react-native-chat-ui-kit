@@ -1,8 +1,12 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { leaveAmityChannel } from '../../providers/channel-provider';
 import { styles } from './styles';
 import { createReport } from '@amityco/ts-sdk-react-native';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import EditIcon from '../../svg/EditIcon';
+import { ArrowRightIcon } from '../../svg/ArrowRightIcon';
+import { GroupMembersIcon } from '../../svg/GroupMembersIcon';
 
 interface ChatDetailProps {
     navigation: any;
@@ -11,7 +15,8 @@ interface ChatDetailProps {
 
 export const ChatRoomSetting: React.FC<ChatDetailProps> = ({ navigation, route }) => {
     const { channelId, channelType, chatReceiver, groupChat } = route.params;
-
+    const [showReportAlert, setShowReportAlert] = useState<boolean>(false);
+    const [showLeaveAlert, setShowLeaveAlert] = useState<boolean>(false);
     const handleGroupProfilePress = () => {
         navigation.navigate('EditChatDetail', { navigation, channelId: channelId, groupChat: groupChat });
     };
@@ -21,27 +26,14 @@ export const ChatRoomSetting: React.FC<ChatDetailProps> = ({ navigation, route }
     };
 
     const handleLeaveChatPress = async () => {
-        Alert.alert(
-            'Leave chat',
-            `If leave this group, you’ll no longer be able to see any messages and files.`,
-            [
-              {
-                text: 'Cancel',
-                style: 'cancel',
-              },
-              {
-                text: 'Leave',
-                style: 'destructive',
-                onPress: () => onLeaveChat(),
-              },
-            ]
-          );
-    
+        setShowLeaveAlert(true)
     };
 
-    const onLeaveChat =async ()=>{
+    const onLeaveChat = async () => {
+
         const isLeave = await leaveAmityChannel(channelId)
-        if(isLeave){
+        setShowLeaveAlert(false);
+        if (isLeave) {
             navigation.navigate('RecentChat')
         }
 
@@ -52,20 +44,20 @@ export const ChatRoomSetting: React.FC<ChatDetailProps> = ({ navigation, route }
                 return (
                     <TouchableOpacity style={styles.rowContainer} onPress={handleGroupProfilePress}>
                         <View style={styles.iconContainer}>
-                            <Image source={require('../../../assets/icon/editPencil.png')} style={styles.icon} />
+                           <EditIcon/>
                         </View>
                         <Text style={styles.rowText}>Group profile</Text>
-                        <Image source={require('../../../assets/icon/arrowRight.png')} style={styles.arrowIcon} />
+                       <ArrowRightIcon/>
                     </TouchableOpacity>
                 );
             case 2:
                 return (
                     <TouchableOpacity style={styles.rowContainer} onPress={handleMembersPress}>
                         <View style={styles.iconContainer}>
-                            <Image source={require('../../../assets/icon/groupMember.png')} style={styles.groupIcon} />
+                            <GroupMembersIcon/>
                         </View>
                         <Text style={styles.rowText}>Members</Text>
-                        <Image source={require('../../../assets/icon/arrowRight.png')} style={styles.arrowIcon} />
+                        <ArrowRightIcon/>
                     </TouchableOpacity>
                 );
             case 3:
@@ -81,15 +73,15 @@ export const ChatRoomSetting: React.FC<ChatDetailProps> = ({ navigation, route }
         }
     };
     async function flagUser() {
-        if(chatReceiver){
+        if (chatReceiver) {
             const didCreateUserReport = await createReport('user', chatReceiver.userId);
-            if(didCreateUserReport){
-                Alert.alert('Report sent', '', []);
+            if (didCreateUserReport) {
+                setShowReportAlert(true)
             }
-       
+
         }
-  
-      }
+
+    }
     const data = [
         { id: 1 },
         { id: 2 },
@@ -109,8 +101,43 @@ export const ChatRoomSetting: React.FC<ChatDetailProps> = ({ navigation, route }
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id.toString()}
                 />
-            }
 
+            }
+            <AwesomeAlert
+                show={showReportAlert}
+                showProgress={false}
+                title="Report sent"
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={true}
+                confirmText="OK"
+                confirmButtonColor="#1054DE"
+                onCancelPressed={() => {
+                    setShowReportAlert(false);
+                }}
+                onConfirmPressed={() => setShowReportAlert(false)}
+                onDismiss={() => setShowReportAlert(false)}
+            />
+            <AwesomeAlert
+                show={showLeaveAlert}
+                showProgress={false}
+                title="Leave Chat"
+                message='If leave this group, you’ll no longer be able to see any messages and files.'
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                showConfirmButton={true}
+                confirmText="Leave"
+                cancelText="Cancel"
+                confirmButtonColor="#FA4D30"
+                cancelButtonColor="#1054DE"
+                onCancelPressed={() => {
+                    setShowLeaveAlert(false);
+                }}
+                onConfirmPressed={() => onLeaveChat()}
+                onDismiss={() => setShowLeaveAlert(false)}
+            />
         </View>
     );
 };

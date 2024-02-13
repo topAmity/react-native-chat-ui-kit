@@ -16,6 +16,7 @@ import MemberDetail from '../screens/MemberDetail/MemberDetail';
 import ChatRoom from '../screens/ChatRoom/ChatRoom';
 import useAuth from '../hooks/useAuth';
 
+
 export default function ChatNavigator() {
   const Stack = createNativeStackNavigator<RootStackParamList>();
   const { isConnected } = useAuth();
