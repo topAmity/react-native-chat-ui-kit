@@ -5,13 +5,13 @@ import {
   View,
   Text,
   Modal,
-  NativeScrollEvent,
-  ListRenderItemInfo,
+  type NativeScrollEvent,
+  type ListRenderItemInfo,
   TextInput,
   FlatList,
-  NativeSyntheticEvent,
+  type NativeSyntheticEvent,
 } from 'react-native';
-import { styles } from './styles';
+import { useStyles } from './styles';
 import type { UserInterface } from '../../types/user.interface';
 import UserItem from '../UserItem';
 import SectionHeader from '../ListSectionHeader';
@@ -19,6 +19,8 @@ import SelectedUserHorizontal from '../SelectedUserHorizontal';
 import { CloseIcon } from '../../svg/CloseIcon';
 import { SearchIcon } from '../../svg/SearchIcon';
 import { CircleCloseIcon } from '../../svg/CircleCloseIcon';
+import { useTheme } from 'react-native-paper';
+import type { MyMD3Theme } from '../../providers/amity-ui-kit-provider';
 interface IModal {
   visible: boolean;
   userId?: string;
@@ -31,7 +33,8 @@ export type SelectUserList = {
   data: UserInterface[];
 };
 const AddMembersModal = ({ visible, onClose, onFinish, initUserList = [] }: IModal) => {
-
+  const theme = useTheme() as MyMD3Theme;
+  const styles =useStyles();
   const [sectionedUserList, setSectionedUserList] = useState<UserInterface[]>(initUserList);
   const [selectedUserList, setSelectedUserList] = useState<UserInterface[]>(initUserList);
   const [usersObject, setUsersObject] = useState<Amity.LiveCollection<Amity.User>>();
@@ -175,7 +178,7 @@ const AddMembersModal = ({ visible, onClose, onFinish, initUserList = [] }: IMod
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity style={styles.closeButton} onPress={handleOnClose}>
-            <CloseIcon />
+            <CloseIcon color={theme.colors.base} />
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
             <Text style={styles.headerText}>Select Member</Text>
@@ -186,7 +189,7 @@ const AddMembersModal = ({ visible, onClose, onFinish, initUserList = [] }: IMod
         </View>
       <View style={styles.inputWrap}>
           <TouchableOpacity onPress={() => queryAccounts(searchTerm)}>
-          <SearchIcon/>
+          <SearchIcon color={theme.colors.base}/>
           </TouchableOpacity>
           <TextInput
             style={styles.input}
@@ -194,7 +197,7 @@ const AddMembersModal = ({ visible, onClose, onFinish, initUserList = [] }: IMod
             onChangeText={handleChange}
           />
           <TouchableOpacity onPress={clearButton}>
-           <CircleCloseIcon/>
+           <CircleCloseIcon color={theme.colors.base}/>
           </TouchableOpacity>
         </View>
         {selectedUserList.length > 0 ? (

@@ -19,7 +19,7 @@ import { LoadingOverlay } from '../../components/LoadingOverlay';
 import * as ImagePicker from 'expo-image-picker';
 import LoadingImage from '../../components/LoadingImage';
 import type { RootStackParamList } from '../../routes/RouteParamList';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraIcon } from '../../svg/CameraIcon';

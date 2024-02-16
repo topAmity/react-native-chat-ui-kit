@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Image, Text, ActivityIndicator, StyleProp, ImageStyle } from 'react-native';
+import { View, Image, Text, ActivityIndicator, type StyleProp, type ImageStyle } from 'react-native';
 import * as Progress from 'react-native-progress';
 import {
   uploadImageFile,

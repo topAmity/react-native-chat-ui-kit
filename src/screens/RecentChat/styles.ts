@@ -40,7 +40,7 @@ export const useStyles = () => {
       color: theme.colors.base
     },
     tabView: {
-      background: theme.colors.base,
+      backgroundColor: theme.colors.background,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
       flexDirection: 'row',
@@ -50,13 +50,13 @@ export const useStyles = () => {
       paddingVertical: 14,
       fontWeight: '600',
       fontSize: 17,
-      color: '#1054DE',
+      color: theme.colors.primary,
       borderBottomColor: '#1054DE',
       alignSelf: 'flex-start',
     },
     indicator: {
       borderBottomWidth: 2,
-      borderBottomColor: '#1054DE',
+      borderBottomColor: theme.colors.primary,
       marginHorizontal: 20,
     },
     androidWrap: {

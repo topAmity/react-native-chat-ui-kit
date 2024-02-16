@@ -1,4 +1,4 @@
-import React, { ReactElement, useMemo, useRef } from 'react';
+import React, { type ReactElement, useMemo, useRef } from 'react';
 
 import {
   View,
@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import { ChannelRepository, getChannelTopic, subscribeTopic } from '@amityco/ts-sdk-react-native';
-import ChatList, { IChatListProps, IGroupChatObject } from '../../components/ChatList/index';
+import ChatList,  { type IChatListProps, type IGroupChatObject } from '../../components/ChatList/index';
 import useAuth from '../../hooks/useAuth';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
@@ -21,10 +21,12 @@ import AddMembersModal from '../../components/AddMembersModal';
 import type { UserInterface } from '../../types/user.interface';
 import { createAmityChannel } from '../../providers/channel-provider';
 import { AddChatIcon } from '../../svg/AddChat';
+import { useTheme } from 'react-native-paper';
+import type { MyMD3Theme } from '../../providers/amity-ui-kit-provider';
 
 export default function RecentChat() {
   const { client, isConnected } = useAuth();
-
+  const theme = useTheme() as MyMD3Theme;
   const [channelObjects, setChannelObjects] = useState<IChatListProps[]>([]);
   const [loadChannel, setLoadChannel] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -55,26 +57,26 @@ export default function RecentChat() {
 
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  useEffect(() => {
-    navigation.setOptions({
+  // useEffect(() => {
+  //   navigation.setOptions({
 
-      header: () => (
-        <View style={styles.topBar}>
-          <CustomText style={styles.titleText}>Chat</CustomText>
-          <TouchableOpacity
-            onPress={() => {
-              setIsModalVisible(true)
-            }}
-          >
-            <AddChatIcon />
-          </TouchableOpacity>
-        </View>
-      ),
-      headerTitle: '',
-    });
+  //     header: () => (
+  //       <View style={styles.topBar}>
+  //         <CustomText style={styles.titleText}>Chat</CustomText>
+  //         <TouchableOpacity
+  //           onPress={() => {
+  //             setIsModalVisible(true)
+  //           }}
+  //         >
+  //           <AddChatIcon color={theme.colors.base} />
+  //         </TouchableOpacity>
+  //       </View>
+  //     ),
+  //     headerTitle: '',
+  //   });
 
 
-  }, [])
+  // }, [])
 
 
 
@@ -225,7 +227,7 @@ export default function RecentChat() {
   };
   const renderTabView = (): ReactElement => {
     return (
-      <View style={[styles.tabView]}>
+      <View style={styles.tabView}>
         <View style={styles.indicator}>
           <CustomText style={styles.tabViewTitle}>Recent</CustomText>
         </View>
@@ -235,6 +237,16 @@ export default function RecentChat() {
 
   return (
     <View style={styles.chatContainer}>
+         <View style={styles.topBar}>
+          <CustomText style={styles.titleText}>Chat</CustomText>
+          <TouchableOpacity
+            onPress={() => {
+              setIsModalVisible(true)
+            }}
+          >
+            <AddChatIcon color={theme.colors.base} />
+          </TouchableOpacity>
+        </View>
       {renderTabView()}
       {renderRecentChat}
       <AddMembersModal onFinish={handleOnFinish} onClose={handleCloseModal} visible={isModalVisible} />

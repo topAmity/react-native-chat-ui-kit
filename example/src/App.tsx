@@ -14,6 +14,7 @@ export default function App() {
       userId="John"
       displayName="John"
       apiEndpoint="https://api.sg.amity.co"
+      darkMode={true}
     >
       <AmityUiKitChat />
     </AmityUiKitProvider>

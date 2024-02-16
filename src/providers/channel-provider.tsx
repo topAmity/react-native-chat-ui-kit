@@ -3,7 +3,7 @@ import {
 } from '@amityco/ts-sdk-react-native';
 
 import { getAmityUser } from './user-provider';
-import type { UserInterface } from 'src/types/user.interface';
+import type { UserInterface } from '../types/user.interface';
 import { Alert } from 'react-native';
 
 

@@ -22,7 +22,7 @@ export const useStyles = () => {
     },
     chatDetailSection: {
       flex: 6,
-      borderBottomColor: '#EBECEF',
+      borderBottomColor: theme.colors.border,
       borderBottomWidth: 1,
       paddingVertical: 16,
       flexDirection: 'row',

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { styles } from './styles';
+import { useStyles } from './styles';
 import RoundCheckbox from '../RoundCheckbox/index';
-import type { UserInterface } from 'src/types/user.interface';
+import type { UserInterface } from '../../types/user.interface';
 import useAuth from '../../hooks/useAuth';
 import { AvatarIcon } from '../../svg/AvatarIcon';
 import { ThreeDotsIcon } from '../../svg/ThreeDotsIcon';
+import { useTheme } from 'react-native-paper';
+import type { MyMD3Theme } from '../../providers/amity-ui-kit-provider';
 
 export default function UserItem({
   user,
@@ -20,6 +22,9 @@ export default function UserItem({
   onPress?: (user: UserInterface) => void;
   onThreeDotTap?: (user: UserInterface) => void;
 }) {
+
+  const theme = useTheme() as MyMD3Theme;
+  const styles = useStyles();
   const { apiRegion } = useAuth()
   const [isChecked, setIsChecked] = useState(false);
   const maxLength = 25;
@@ -71,7 +76,7 @@ export default function UserItem({
             }
           }}
         >
-          <ThreeDotsIcon />
+          <ThreeDotsIcon color={theme.colors.base} />
         </TouchableOpacity>
       )}
     </TouchableOpacity>

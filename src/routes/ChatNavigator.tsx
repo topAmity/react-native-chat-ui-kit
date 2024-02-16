@@ -33,7 +33,14 @@ export default function ChatNavigator() {
         }}
       >
 
-        <Stack.Screen name="RecentChat" component={RecentChat} />
+        <Stack.Screen
+          name="RecentChat"
+          component={RecentChat}
+          options={({ }) => ({
+            title: '',
+            headerShown: false
+
+          })} />
 
         <Stack.Screen
           name="ChatRoom"
@@ -44,8 +51,9 @@ export default function ChatNavigator() {
           name="ChatDetail"
           component={ChatRoomSetting}
           options={{
-            title: 'Chat Detail',
+            headerShown: false
           }}
+
         />
         <Stack.Screen
           name="MemberDetail"

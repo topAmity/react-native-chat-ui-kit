@@ -15,8 +15,8 @@ import {
 } from 'react-native';
 // import ImageView from 'react-native-image-viewing';
 import CustomText from '../../components/CustomText';
-import styles from './styles';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { useStyles } from './styles';
+import { type RouteProp, useNavigation } from '@react-navigation/native';
 import type { RootStackParamList } from '../../routes/RouteParamList';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -49,6 +49,8 @@ import { MenuIcon } from '../../svg/MenuIcon';
 import { PlusIcon } from '../../svg/PlusIcon';
 import { SendChatIcon } from '../../svg/SendChatIcon';
 import { AlbumIcon } from '../../svg/AlbumIcon';
+import { useTheme } from 'react-native-paper';
+import type { MyMD3Theme } from '../../providers/amity-ui-kit-provider';
 
 type ChatRoomScreenComponentType = React.FC<{
   route: RouteProp<RootStackParamList, 'ChatRoom'>;
@@ -80,6 +82,8 @@ export interface IDisplayImage {
   thumbNail?: string;
 }
 const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
+
+  const styles = useStyles();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const { chatReceiver, groupChat, channelId } = route.params;
@@ -88,6 +92,7 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [messagesData, setMessagesData] = useState<Amity.LiveCollection<Amity.Message>>();
   const [imageMultipleUri, setImageMultipleUri] = useState<string[]>([]);
+  const theme = useTheme() as MyMD3Theme;
 
   const {
     data: messagesArr = [],
@@ -159,7 +164,7 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
               navigation.navigate('ChatDetail', { channelId: channelId, channelType: chatReceiver ? 'conversation' : 'community', chatReceiver: chatReceiver ?? undefined, groupChat: groupChat ?? undefined });
             }}
           >
-            <MenuIcon />
+            <MenuIcon color={theme.colors.base} />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -330,7 +335,7 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
     return (
       <View style={styles.bubbleDivider}>
         <View style={styles.textDivider}>
-          <Text >
+          <Text style={styles.dateText} >
             {displayText}
           </Text>
         </View>
@@ -647,19 +652,20 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
             value={inputMessage}
             onChangeText={(text) => setInputMessage(text)}
             placeholder="Type a message..."
-            placeholderTextColor="#8A8A8A"
+            placeholderTextColor={theme.colors.baseShade3}
             onFocus={handleOnFocus}
+
           />
 
           {inputMessage.length > 0 ? (
             <TouchableOpacity onPress={handleSend} style={styles.sendIcon}>
-              <SendChatIcon />
+              <SendChatIcon color={theme.colors.primary} />
             </TouchableOpacity>
           ) : (
             <View>
 
               <TouchableOpacity onPress={handlePress} style={styles.sendIcon}>
-                <PlusIcon />
+                <PlusIcon color={theme.colors.base} />
               </TouchableOpacity>
             </View>
           )}
@@ -671,9 +677,9 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
               style={{ marginHorizontal: 30 }}
             >
               <View style={styles.IconCircle}>
-                <CameraBoldIcon />
+                <CameraBoldIcon color={theme.colors.base} />
               </View>
-              <CustomText>Camera</CustomText>
+              <CustomText style={styles.iconText}>Camera</CustomText>
             </TouchableOpacity>
             <TouchableOpacity
               // disabled={loadingImages.length > 0}
@@ -681,9 +687,9 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
               style={{ marginHorizontal: 20, alignItems: 'center' }}
             >
               <View style={styles.IconCircle}>
-                <AlbumIcon />
+                <AlbumIcon color={theme.colors.base} />
               </View>
-              <CustomText>Album</CustomText>
+              <CustomText style={styles.iconText}>Album</CustomText>
             </TouchableOpacity>
           </View>
         )}

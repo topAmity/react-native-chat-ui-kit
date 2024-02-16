@@ -4,12 +4,12 @@ import {
   TouchableOpacity,
   View,
   Text,
-  ListRenderItemInfo,
+  type ListRenderItemInfo,
   TextInput,
   FlatList,
 } from 'react-native';
 
-import { styles } from './styles';
+import { useStyles } from './styles';
 import type { UserInterface } from '../../types/user.interface';
 import UserItem from '../../components/UserItem';
 
@@ -17,6 +17,8 @@ import CustomTab from '../../components/CustomTab';
 import { SearchIcon } from '../../svg/SearchIcon';
 import { CircleCloseIcon } from '../../svg/CircleCloseIcon';
 import { BackIcon } from '../../svg/BackIcon';
+import { useTheme } from 'react-native-paper';
+import type { MyMD3Theme } from '../../providers/amity-ui-kit-provider';
 
 export type SelectUserList = {
   title: string;
@@ -24,6 +26,8 @@ export type SelectUserList = {
 };
 
 export default function MemberDetail({ route, navigation }: any) {
+
+  const styles = useStyles();
   const { channelID } = route.params;
   const [sectionedUserList, setSectionedUserList] = useState<UserInterface[]>([]);
 
@@ -32,7 +36,7 @@ export default function MemberDetail({ route, navigation }: any) {
   const [tabIndex, setTabIndex] = useState<number>(1)
   const { data: userArr = [], onNextPage } = usersObject ?? {};
 
-
+  const theme = useTheme() as MyMD3Theme;
 
   const queryAccounts = (text: string = '', roles?: string[]) => {
 
@@ -120,7 +124,7 @@ export default function MemberDetail({ route, navigation }: any) {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleGoBack} style={styles.closeButton}>
-          <BackIcon />
+          <BackIcon color={theme.colors.base} />
         </TouchableOpacity>
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>Member Detail</Text>
@@ -129,7 +133,7 @@ export default function MemberDetail({ route, navigation }: any) {
       <CustomTab tabName={['Members', 'Moderators']} onTabChange={handleTabChange} />
       <View style={styles.inputWrap}>
         <TouchableOpacity onPress={() => queryAccounts(searchTerm)}>
-          <SearchIcon />
+          <SearchIcon color={theme.colors.base}/>
         </TouchableOpacity>
         <TextInput
           style={styles.input}
@@ -137,7 +141,7 @@ export default function MemberDetail({ route, navigation }: any) {
           onChangeText={handleChange}
         />
         <TouchableOpacity onPress={clearButton}>
-          <CircleCloseIcon />
+          <CircleCloseIcon color={theme.colors.base}/>
         </TouchableOpacity>
       </View>
 

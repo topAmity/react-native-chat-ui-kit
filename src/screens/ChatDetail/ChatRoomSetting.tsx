@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { leaveAmityChannel } from '../../providers/channel-provider';
-import { styles } from './styles';
+import { useStyles } from './styles';
 import { createReport } from '@amityco/ts-sdk-react-native';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import EditIcon from '../../svg/EditIcon';
 import { ArrowRightIcon } from '../../svg/ArrowRightIcon';
 import { GroupMembersIcon } from '../../svg/GroupMembersIcon';
+import { BackIcon } from '../../svg/BackIcon';
+import { useTheme } from 'react-native-paper';
+import type { MyMD3Theme } from '../../providers/amity-ui-kit-provider';
 
 interface ChatDetailProps {
     navigation: any;
@@ -14,6 +17,8 @@ interface ChatDetailProps {
 }
 
 export const ChatRoomSetting: React.FC<ChatDetailProps> = ({ navigation, route }) => {
+    const theme = useTheme() as MyMD3Theme;
+    const styles = useStyles();
     const { channelId, channelType, chatReceiver, groupChat } = route.params;
     const [showReportAlert, setShowReportAlert] = useState<boolean>(false);
     const [showLeaveAlert, setShowLeaveAlert] = useState<boolean>(false);
@@ -38,26 +43,30 @@ export const ChatRoomSetting: React.FC<ChatDetailProps> = ({ navigation, route }
         }
 
     }
+    const handleGoBack = () => {
+        navigation.goBack()
+    }
+
     const renderItem = ({ item }: any) => {
         switch (item.id) {
             case 1:
                 return (
                     <TouchableOpacity style={styles.rowContainer} onPress={handleGroupProfilePress}>
                         <View style={styles.iconContainer}>
-                           <EditIcon/>
+                            <EditIcon />
                         </View>
                         <Text style={styles.rowText}>Group profile</Text>
-                       <ArrowRightIcon/>
+                        <ArrowRightIcon />
                     </TouchableOpacity>
                 );
             case 2:
                 return (
                     <TouchableOpacity style={styles.rowContainer} onPress={handleMembersPress}>
                         <View style={styles.iconContainer}>
-                            <GroupMembersIcon/>
+                            <GroupMembersIcon />
                         </View>
                         <Text style={styles.rowText}>Members</Text>
-                        <ArrowRightIcon/>
+                        <ArrowRightIcon color={theme.colors.base} />
                     </TouchableOpacity>
                 );
             case 3:
@@ -90,6 +99,14 @@ export const ChatRoomSetting: React.FC<ChatDetailProps> = ({ navigation, route }
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={handleGoBack} style={styles.closeButton}>
+                    <BackIcon color={theme.colors.base} />
+                </TouchableOpacity>
+                <View style={styles.headerTextContainer}>
+                    <Text style={styles.headerText}>Chat Detail</Text>
+                </View>
+            </View>
             {channelType == 'conversation' ?
                 <TouchableOpacity style={styles.rowContainer} onPress={flagUser}>
                     <View style={styles.ChatSettingContainer}>
