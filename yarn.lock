@@ -67,7 +67,7 @@ __metadata:
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.0.0
     expo-constants: ^14.2.1
-    expo-image-picker: ^14.1.1
+    expo-image-picker: ^14.7.1
     expo-modules-core: ^1.11.8
     i18next: 22.4.10
     jest: ^28.1.1
@@ -8806,7 +8806,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-image-picker@npm:^14.1.1":
+"expo-image-picker@npm:^14.7.1":
   version: 14.7.1
   resolution: "expo-image-picker@npm:14.7.1"
   dependencies:

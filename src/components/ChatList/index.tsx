@@ -46,7 +46,7 @@ const ChatList: React.FC<IChatListProps> = ({
   const [groupChatObject, setGroupChatObject] =
     useState<Amity.Membership<'channel'>[]>();
   const styles = useStyles();
-  
+
   const handlePress = (
     channelId: string,
     channelType: string,
@@ -126,7 +126,8 @@ const ChatList: React.FC<IChatListProps> = ({
               }
             }
           /> : <View style={styles.icon}>
-            {channelType === 'community' ? <CommunityChatIcon /> : <PrivateChatIcon />}
+            {channelType === 'community' ? <CommunityChatIcon />
+              : <PrivateChatIcon />}
 
           </View>}
 

@@ -52,18 +52,17 @@ export default function UserItem({
     <TouchableOpacity style={styles.listItem} onPress={handleToggle}>
       <View style={styles.leftContainer}>
         {
-          user.avatarFileId ?
+          user?.avatarFileId ? (
             <Image
               style={styles.avatar}
-              source={
-                {
-                  uri: user.avatarFileId && avatarFileURL(user.avatarFileId!),
-                }
-
-              }
-            /> : <View style={styles.avatar}> <AvatarIcon /></View>
+              source={{ uri: avatarFileURL(user.avatarFileId) }}
+            />
+          ) : (
+            <View style={styles.avatar}>
+              <AvatarIcon />
+            </View>
+          )
         }
-
         <Text style={styles.itemText}>{displayName()}</Text>
       </View>
       {!showThreeDot ? (

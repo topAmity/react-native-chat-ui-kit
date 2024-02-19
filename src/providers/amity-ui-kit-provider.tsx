@@ -12,6 +12,7 @@ export interface IAmityUIkitProvider {
   children: any;
   theme?: CustomColors
   darkMode?: boolean
+  authToken?: string
 }
 
 interface CustomColors {
@@ -40,6 +41,7 @@ export default function AmityUiKitProvider({
   apiEndpoint,
   children,
   theme,
+  authToken,
   darkMode = false
 }: IAmityUIkitProvider) {
 
@@ -62,8 +64,8 @@ export default function AmityUiKitProvider({
         friendBubble: theme?.chatBubbles?.friendBubble ?? '#EBECEF',
       },
       chatMessageTexts: {
-        userMessageText: theme?.chatBubbles?.userBubble ?? '#1054DE',
-        friendMessageText: theme?.chatBubbles?.friendBubble ?? '#EBECEF',
+        userMessageText: theme?.chatMessageTexts?.userMessageText ?? '#FFFFFF',
+        friendMessageText: theme?.chatMessageTexts?.friendMessageText ?? '#292B32',
       },
       chatTopBar: theme?.chatTopBar ?? '#FFFFFF',
     },
@@ -86,6 +88,10 @@ export default function AmityUiKitProvider({
         userBubble: theme?.chatBubbles?.userBubble ?? '#1054DE',
         friendBubble: theme?.chatBubbles?.friendBubble ?? '#32343A',
       },
+      chatMessageTexts: {
+        userMessageText: theme?.chatMessageTexts?.userMessageText ?? '#FFFFFF',
+        friendMessageText: theme?.chatMessageTexts?.friendMessageText ?? '#292B32',
+      },
       chatTopBar: theme?.chatTopBar ?? '#292B32',
     },
   };
@@ -97,6 +103,7 @@ export default function AmityUiKitProvider({
       apiKey={apiKey}
       apiRegion={apiRegion}
       apiEndpoint={apiEndpoint}
+      authToken={authToken}
     >
       <PaperProvider theme={darkMode ? defaultDarkTheme : customizedTheme}>
         <MenuProvider>

@@ -7,7 +7,7 @@ import { BackIcon } from '../../svg/BackIcon';
 import { useTheme } from 'react-native-paper';
 import type { MyMD3Theme } from '../../providers/amity-ui-kit-provider';
 interface IBackBtn {
-  onPress: () => any;
+  onPress?: () => any;
 }
 export default function BackButton({ onPress }: IBackBtn) {
   const theme = useTheme() as MyMD3Theme;

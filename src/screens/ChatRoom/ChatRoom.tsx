@@ -12,8 +12,9 @@ import {
   KeyboardAvoidingView,
   FlatList,
   Keyboard,
+  Alert,
 } from 'react-native';
-// import ImageView from 'react-native-image-viewing';
+import ImageView from 'react-native-image-viewing';
 import CustomText from '../../components/CustomText';
 import { useStyles } from './styles';
 import { type RouteProp, useNavigation } from '@react-navigation/native';
@@ -35,9 +36,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LoadingImage from '../../components/LoadingImage';
 import {
   Menu,
-  // MenuOptions,
-  // MenuOption,
-  // MenuTrigger,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
 } from "react-native-popup-menu";
 import { SvgXml } from 'react-native-svg';
 import { deletedIcon } from '../../svg/svg-xml-list';
@@ -104,8 +105,8 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
   const [sortedMessages, setSortedMessages] = useState<IMessage[]>([]);
   const flatListRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  // const [visibleFullImage, setIsVisibleFullImage] = useState<boolean>(false);
-  // const [fullImage, setFullImage] = useState<string>('');
+  const [visibleFullImage, setIsVisibleFullImage] = useState<boolean>(false);
+  const [fullImage, setFullImage] = useState<string>('');
   const [subChannelData, setSubChannelData] = useState<Amity.SubChannel>();
   const [displayImages, setDisplayImages] = useState<IDisplayImage[]>([]);
   const [editMessageModal, setEditMessageModal] = useState<boolean>(false)
@@ -113,64 +114,69 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
   const [editMessageText, setEditMessageText] = useState<string>('');
   const disposers: Amity.Unsubscriber[] = [];
 
+  useEffect(() => {
 
-  navigation.setOptions({
-    header: () => (
-      <SafeAreaView edges={['top']}>
-        <View style={styles.topBar}>
-          <View style={styles.chatTitleWrap}>
-            <TouchableOpacity onPress={handleBack}>
-              <BackButton onPress={handleBack} />
-            </TouchableOpacity>
+    navigation.setOptions({
+      header: () => (
+        <SafeAreaView style={styles.topBarContainer} edges={['top']}>
+          <View style={styles.topBar}>
+            <View style={styles.chatTitleWrap}>
+              <TouchableOpacity onPress={handleBack}>
+                <BackButton onPress={handleBack} />
+              </TouchableOpacity>
 
-            {chatReceiver ? (
-              chatReceiver?.avatarFileId ?
+              {chatReceiver ? (
+                chatReceiver?.avatarFileId ?
+                  <Image
+                    style={styles.avatar}
+                    source={
+                      {
+                        uri: `https://api.${apiRegion}.amity.co/api/v3/files/${chatReceiver?.avatarFileId}/download`,
+                      }
+
+                    }
+                  /> : <View style={styles.avatar}>
+                    <AvatarIcon />
+                  </View>
+              ) : groupChat?.avatarFileId ? (
                 <Image
                   style={styles.avatar}
-                  source={
-                    {
-                      uri: `https://api.${apiRegion}.amity.co/api/v3/files/${chatReceiver?.avatarFileId}/download`,
-                    }
-
-                  }
-                /> : <View style={styles.avatar}> <AvatarIcon /></View>
-            ) : groupChat?.avatarFileId ? (
-              <Image
-                style={styles.avatar}
-                source={{
-                  uri: `https://api.${apiRegion}.amity.co/api/v3/files/${groupChat?.avatarFileId}/download`,
-                }}
-              />
-            ) : (
-              <View style={styles.icon}>
-                <GroupChatIcon />
-              </View>
-            )}
-            <View>
-              <CustomText style={styles.chatName} numberOfLines={1}>
-                {chatReceiver
-                  ? chatReceiver?.displayName
-                  : groupChat?.displayName}
-              </CustomText>
-              {groupChat && (
-                <CustomText style={styles.chatMember}>
-                  {groupChat?.memberCount} members
-                </CustomText>
+                  source={{
+                    uri: `https://api.${apiRegion}.amity.co/api/v3/files/${groupChat?.avatarFileId}/download`,
+                  }}
+                />
+              ) : (
+                <View style={styles.icon}>
+                  <GroupChatIcon />
+                </View>
               )}
+              <View>
+                <CustomText style={styles.chatName} numberOfLines={1}>
+                  {chatReceiver
+                    ? chatReceiver?.displayName
+                    : groupChat?.displayName}
+                </CustomText>
+                {groupChat && (
+                  <CustomText style={styles.chatMember}>
+                    {groupChat?.memberCount} members
+                  </CustomText>
+                )}
+              </View>
             </View>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('ChatDetail', { channelId: channelId, channelType: chatReceiver ? 'conversation' : 'community', chatReceiver: chatReceiver ?? undefined, groupChat: groupChat ?? undefined });
+              }}
+            >
+              <MenuIcon color={theme.colors.base} />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('ChatDetail', { channelId: channelId, channelType: chatReceiver ? 'conversation' : 'community', chatReceiver: chatReceiver ?? undefined, groupChat: groupChat ?? undefined });
-            }}
-          >
-            <MenuIcon color={theme.colors.base} />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    ),
-    headerTitle: '',
-  });
+        </SafeAreaView>
+      ),
+      headerTitle: '',
+    });
+
+  }, [])
 
   const subscribeSubChannel = (subChannel: Amity.SubChannel) =>
     disposers.push(subscribeTopic(getSubChannelTopic(subChannel)));
@@ -313,14 +319,15 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
     setSortedMessages([...reOrderArr]);
   }, [messages]);
 
-  // const openFullImage = (image: string, messageType: string) => {
-  //   if (messageType === 'image' || messageType === 'file') {
-  //     const fullSizeImage: string = image + '?size=full';
-  //     setFullImage(fullSizeImage);
-  //     setIsVisibleFullImage(true);
-  //   }
+  const openFullImage = (image: string, messageType: string) => {
+    if (messageType === 'image' || messageType === 'file') {
+      const fullSizeImage: string = image + '?size=full';
+      setFullImage(fullSizeImage);
+      setIsVisibleFullImage(true);
+    }
 
-  // };
+  };
+
   const renderTimeDivider = (date: string) => {
     const currentDate = date;
     const formattedDate = moment(currentDate).format('MMMM DD, YYYY');
@@ -343,19 +350,19 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
     );
   };
 
-  // const deleteMessage = async (messageId: string) => {
-  //   const message = await MessageRepository.softDeleteMessage(messageId);
-  //   return message
+  const deleteMessage = async (messageId: string) => {
+    const message = await MessageRepository.softDeleteMessage(messageId);
+    return message
 
-  // }
+  }
 
-  // const reportMessage = async (messageId: string) => {
-  //   const isFlagged = await MessageRepository.flagMessage(messageId);
-  //   if (isFlagged) {
-  //     Alert.alert('Report sent ✅')
-  //   }
+  const reportMessage = async (messageId: string) => {
+    const isFlagged = await MessageRepository.flagMessage(messageId);
+    if (isFlagged) {
+      Alert.alert('Report sent ✅')
+    }
 
-  // }
+  }
 
 
   const renderChatMessages = (message: IMessage, index: number) => {
@@ -410,46 +417,46 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
               </View>
 
               : <Menu>
-                {/* <MenuTrigger onAlternativeAction={() => openFullImage(message.image as string, message.messageType)} customStyles={{ triggerTouchable: { underlayColor: 'transparent' } }} triggerOnLongPress> */}
-                {message.messageType === 'text' ? (
-                  <View
-                    key={message._id}
-                    style={[
-                      styles.textChatBubble,
-                      isUserChat ? styles.userBubble : styles.friendBubble,
-                    ]}
-                  >
-                    <Text
-                      style={isUserChat ? styles.chatUserText : styles.chatFriendText}
+                <MenuTrigger onAlternativeAction={() => openFullImage(message.image as string, message.messageType)} customStyles={{ triggerTouchable: { underlayColor: 'transparent' } }} triggerOnLongPress>
+                  {message.messageType === 'text' ? (
+                    <View
+                      key={message._id}
+                      style={[
+                        styles.textChatBubble,
+                        isUserChat ? styles.userBubble : styles.friendBubble,
+                      ]}
                     >
-                      {message.text}
-                    </Text>
-                  </View>
-                ) : (
-                  <View
-                    style={[
-                      styles.imageChatBubble,
-                      isUserChat ? styles.userImageBubble : styles.friendBubble,
-                    ]}
-                  >
+                      <Text
+                        style={isUserChat ? styles.chatUserText : styles.chatFriendText}
+                      >
+                        {message.text}
+                      </Text>
+                    </View>
+                  ) : (
+                    <View
+                      style={[
+                        styles.imageChatBubble,
+                        isUserChat ? styles.userImageBubble : styles.friendBubble,
+                      ]}
+                    >
 
-                    <Image
-                      style={styles.imageMessage}
-                      source={{
-                        uri: message.image + '?size=medium',
-                      }}
-                    />
-                  </View>
-                )}
-                {/* </MenuTrigger> */}
-                {/* <MenuOptions customStyles={{ optionsContainer: { ...styles.optionsContainer, marginLeft: isUserChat ? 240 + ((message.text && message.text.length < 5) ? message.text.length * 10 : 10) : 0 } }}>
+                      <Image
+                        style={styles.imageMessage}
+                        source={{
+                          uri: message.image + '?size=medium',
+                        }}
+                      />
+                    </View>
+                  )}
+                </MenuTrigger>
+                <MenuOptions customStyles={{ optionsContainer: { ...styles.optionsContainer, marginLeft: isUserChat ? 240 + ((message.text && message.text.length < 5) ? message.text.length * 10 : 10) : 0 } }}>
                   {isUserChat ? <MenuOption onSelect={() => Alert.alert('Delete this message?', `Message will be also be permanently removed from your friend's devices.`, [
                     { text: 'Cancel', style: 'cancel' },
                     { text: 'Delete', style: 'destructive', onPress: () => deleteMessage(message._id) },
                   ])} text="Delete" /> : <MenuOption onSelect={() => reportMessage(message._id)} text="Report" />}
                   {(message.messageType === 'text' && isUserChat) && <MenuOption onSelect={() => { return openEditMessageModal(message._id, message.text as string) }} text="Edit" />}
 
-                </MenuOptions> */}
+                </MenuOptions>
 
               </Menu>}
             <Text
@@ -508,7 +515,7 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
         result.assets[0]
       ) {
         const selectedImages = result.assets;
-        const imageUriArr: string[] = selectedImages.map((item) => item.uri);
+        const imageUriArr: string[] = selectedImages.map((item: { uri: string; }) => item.uri);
         const imagesArr = [...imageMultipleUri];
         const totalImages = imagesArr.concat(imageUriArr);
         setImageMultipleUri(totalImages);
@@ -582,7 +589,7 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const selectedImages = result.assets;
-      const imageUriArr: string[] = selectedImages.map((item) => item.uri);
+      const imageUriArr: string[] = selectedImages.map((item: { uri: string; }) => item.uri);
       const imagesArr = [...imageMultipleUri];
       const totalImages = imagesArr.concat(imageUriArr);
       setImageMultipleUri(totalImages);
@@ -610,11 +617,11 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
     );
   }, [displayImages, handleOnFinishImage]);
 
-  // const openEditMessageModal = (messageId: string, text: string) => {
-  //   setEditMessageId(messageId)
-  //   setEditMessageModal(true)
-  //   setEditMessageText(text)
-  // }
+  const openEditMessageModal = (messageId: string, text: string) => {
+    setEditMessageId(messageId)
+    setEditMessageModal(true)
+    setEditMessageText(text)
+  }
 
   const closeEditMessageModal = () => {
     setEditMessageId('')
@@ -694,12 +701,12 @@ const ChatRoom: ChatRoomScreenComponentType = ({ route }) => {
           </View>
         )}
       </KeyboardAvoidingView>
-      {/* <ImageView
+      <ImageView
         images={[{ uri: fullImage }]}
         imageIndex={0}
         visible={visibleFullImage}
         onRequestClose={() => setIsVisibleFullImage(false)}
-      /> */}
+      />
       <EditMessageModal
         visible={editMessageModal}
         onClose={closeEditMessageModal}

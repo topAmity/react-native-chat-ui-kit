@@ -57,26 +57,26 @@ export default function RecentChat() {
 
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  // useEffect(() => {
-  //   navigation.setOptions({
+  useEffect(() => {
+    navigation.setOptions({
 
-  //     header: () => (
-  //       <View style={styles.topBar}>
-  //         <CustomText style={styles.titleText}>Chat</CustomText>
-  //         <TouchableOpacity
-  //           onPress={() => {
-  //             setIsModalVisible(true)
-  //           }}
-  //         >
-  //           <AddChatIcon color={theme.colors.base} />
-  //         </TouchableOpacity>
-  //       </View>
-  //     ),
-  //     headerTitle: '',
-  //   });
+      header: () => (
+        <View style={styles.topBar}>
+          <CustomText style={styles.titleText}>Chat</CustomText>
+          <TouchableOpacity
+            onPress={() => {
+              setIsModalVisible(true)
+            }}
+          >
+            <AddChatIcon color={theme.colors.base} />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerTitle: '',
+    });
 
 
-  // }, [])
+  }, [])
 
 
 
@@ -197,7 +197,7 @@ export default function RecentChat() {
         <LoadingIndicator />
       </View>
     ) : (
-      <View style={{ flex: 1 }}>
+      <View style={styles.chatListContainer}>
         <FlatList
           data={channelObjects}
           renderItem={({ item }) => renderChatList(item)}
@@ -205,7 +205,6 @@ export default function RecentChat() {
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.4}
           ref={flatListRef}
-          contentContainerStyle={{ flex: 1 }}
         />
 
       </View>
@@ -237,16 +236,6 @@ export default function RecentChat() {
 
   return (
     <View style={styles.chatContainer}>
-         <View style={styles.topBar}>
-          <CustomText style={styles.titleText}>Chat</CustomText>
-          <TouchableOpacity
-            onPress={() => {
-              setIsModalVisible(true)
-            }}
-          >
-            <AddChatIcon color={theme.colors.base} />
-          </TouchableOpacity>
-        </View>
       {renderTabView()}
       {renderRecentChat}
       <AddMembersModal onFinish={handleOnFinish} onClose={handleCloseModal} visible={isModalVisible} />

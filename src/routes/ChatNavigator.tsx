@@ -38,8 +38,6 @@ export default function ChatNavigator() {
           component={RecentChat}
           options={({ }) => ({
             title: '',
-            headerShown: false
-
           })} />
 
         <Stack.Screen

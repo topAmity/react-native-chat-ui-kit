@@ -6,6 +6,9 @@ export const useStyles = () => {
   const theme = useTheme() as MyMD3Theme;
 
   const styles = StyleSheet.create({
+    topBarContainer: {
+      backgroundColor: theme.colors.chatTopBar,
+    },
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
@@ -29,7 +32,7 @@ export const useStyles = () => {
     },
     userBubble: {
       alignSelf: 'flex-end',
-      backgroundColor: '#1054DE',
+      backgroundColor:  theme.colors.chatBubbles?.userBubble,
       maxWidth: '100%',
       marginLeft: 60
     },
@@ -53,11 +56,11 @@ export const useStyles = () => {
     },
     chatUserText: {
       fontSize: 16,
-      color: 'white',
+      color: theme.colors.chatMessageTexts?.userMessageText,
     },
     chatFriendText: {
       fontSize: 16,
-      color: theme.colors.base,
+      color:  theme.colors.chatMessageTexts?.friendMessageText,
     },
     deletedMessage: {
       color: '#898E9E',
