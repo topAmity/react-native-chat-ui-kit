@@ -30,7 +30,7 @@ export const useStyles = () => {
     userBubble: {
       alignSelf: 'flex-end',
       backgroundColor: '#1054DE',
-      maxWidth: '100%',
+      maxWidth: Dimensions.get('window').width -70,
       marginLeft: 60
     },
     userMessageDelete: {
@@ -48,7 +48,7 @@ export const useStyles = () => {
     friendBubble: {
       alignSelf: 'flex-start',
       backgroundColor: theme.colors.chatBubbles?.friendBubble,
-      maxWidth: '100%',
+      maxWidth: Dimensions.get('window').width -100,
       marginRight: 60
     },
     chatUserText: {

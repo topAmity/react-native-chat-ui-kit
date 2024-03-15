@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import { ChannelRepository, getChannelTopic, subscribeTopic } from '@amityco/ts-sdk-react-native';
-import ChatList,  { type IChatListProps, type IGroupChatObject } from '../../components/ChatList/index';
+import ChatList, { type IChatListProps, type IGroupChatObject } from '../../components/ChatList/index';
 import useAuth from '../../hooks/useAuth';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
@@ -41,7 +41,6 @@ export default function RecentChat() {
     data: channels = [],
     onNextPage,
     hasNextPage,
-
   } = channelData ?? {};
   const disposers: Amity.Unsubscriber[] = [];
   const subscribedChannels: Amity.Channel['channelId'][] = [];
@@ -94,7 +93,9 @@ export default function RecentChat() {
     disposers.push(unsubscribe);
   };
   useEffect(() => {
-    onQueryChannel();
+
+    onQueryChannel()
+
     return () => {
       disposers.forEach(fn => fn());
     };
@@ -237,16 +238,16 @@ export default function RecentChat() {
 
   return (
     <View style={styles.chatContainer}>
-         <View style={styles.topBar}>
-          <CustomText style={styles.titleText}>Chat</CustomText>
-          <TouchableOpacity
-            onPress={() => {
-              setIsModalVisible(true)
-            }}
-          >
-            <AddChatIcon color={theme.colors.base} />
-          </TouchableOpacity>
-        </View>
+      <View style={styles.topBar}>
+        <CustomText style={styles.titleText}>Chat</CustomText>
+        <TouchableOpacity
+          onPress={() => {
+            setIsModalVisible(true)
+          }}
+        >
+          <AddChatIcon color={theme.colors.base} />
+        </TouchableOpacity>
+      </View>
       {renderTabView()}
       {renderRecentChat}
       <AddMembersModal onFinish={handleOnFinish} onClose={handleCloseModal} visible={isModalVisible} />
