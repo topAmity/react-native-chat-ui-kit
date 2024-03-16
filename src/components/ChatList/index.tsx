@@ -46,28 +46,10 @@ const ChatList: React.FC<IChatListProps> = ({
   const [groupChatObject, setGroupChatObject] =
     useState<Amity.Membership<'channel'>[]>();
   const styles = useStyles();
-  
+
   const handlePress = (
-    channelId: string,
-    channelType: string,
     chatMemberNumber: number
   ) => {
-    console.log('type:' + channelType);
-
-    ChannelRepository.Membership.getMembers(
-      { channelId },
-      ({ data: members }) => {
-        if (chatMemberNumber === 2 && members) {
-          setOneOnOneChatObject(members);
-        } else if (members) {
-          setGroupChatObject(members);
-        }
-      },
-    );
-
-  };
-
-  useEffect(() => {
     if (oneOnOneChatObject) {
       const targetIndex: number = oneOnOneChatObject?.findIndex(
         (item) => item.userId !== (client as Amity.Client).userId
@@ -78,15 +60,14 @@ const ChatList: React.FC<IChatListProps> = ({
           ?.displayName as string,
         avatarFileId: oneOnOneChatObject[targetIndex]?.user?.avatarFileId ?? '',
       };
+      if (chatReceiver.userId) {
+        navigation.navigate('ChatRoom', {
+          channelId: chatId,
+          chatReceiver: chatReceiver,
+        });
+      }
 
-      navigation.navigate('ChatRoom', {
-        channelId: chatId,
-        chatReceiver: chatReceiver,
-      });
     }
-  }, [oneOnOneChatObject]);
-
-  useEffect(() => {
     if (groupChatObject) {
       const userArr: UserInterface[] = groupChatObject?.map((item) => {
         return {
@@ -107,7 +88,22 @@ const ChatList: React.FC<IChatListProps> = ({
         groupChat: groupChat,
       });
     }
-  }, [groupChatObject]);
+
+  };
+  useEffect(() => {
+    ChannelRepository.Membership.getMembers(
+      { channelId: chatId },
+      ({ data: members }) => {
+        if (chatMemberNumber === 2 && members) {
+          setOneOnOneChatObject(members);
+        } else if (members) {
+          setGroupChatObject(members);
+        }
+      },
+    );
+  }, [])
+
+
 
   return (
 
